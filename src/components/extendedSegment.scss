@@ -1,0 +1,54 @@
+@import '../App.scss';
+
+.ExtendedSegment {
+    width: 90%;
+    max-height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: $primary-white;
+    padding: 10px;
+}
+
+.PrimaryTitle {
+    width: 90%;
+    color: $primary-black;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 6px;
+}
+
+.TileContainer {
+    display: flex;
+    width: 100%;
+
+    .TileWrapper {
+        width: 25%;
+    }
+
+    .Tile {
+        background-color: $secondary-purple;
+        color: $primary-white;
+        width: 90%;
+        margin: 0 auto;
+
+        &__Label {
+
+        }
+
+        &__Count {
+
+            &--1 {
+
+            }
+
+            &--2 {
+
+            }
+        }
+
+        &__Percent {
+
+        }
+    }
+}
