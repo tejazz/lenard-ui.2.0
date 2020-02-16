@@ -1,35 +1,11 @@
 import React, { PureComponent } from 'react';
 import './visualSection.scss';
-import { BarChart, YAxis, XAxis, Tooltip, Bar, PieChart, Pie } from 'recharts';
+import { BarChart, YAxis, XAxis, Tooltip, Bar, ResponsiveContainer } from 'recharts';
+import { filterBasedOnPercentage, filterBasedOnBenchmark } from '../utils/functions';
 
 class VisualSection extends PureComponent {
-    mapFileItems = (sortedArray, limitSales, totalSales) => {
-        let filteredArray = [];
-        let checkSales = 0;
-        // const { withBenchmark } = this.state;
-        let withBenchmark = false;
-
-        sortedArray.map((item) => {
-            if (checkSales < limitSales) {
-                if (withBenchmark) {
-                    if (item.PresentStatus === 1 || item.PresentStatus === 3) {
-                        checkSales += item.OrderedProductSales;
-                        filteredArray = filteredArray.concat(item);
-                    }
-                } else {
-                    checkSales += item.OrderedProductSales;
-                    filteredArray = filteredArray.concat(item);
-                }
-            }
-        });
-
-        return filteredArray;
-    }
-
     render() {
-        console.log(this.props);
-        const { FirstFile, SecondFile } = this.props;
-        let percentageSales = 60;
+        const { FirstFile, SecondFile, percentageSales, withBenchmark, benchmarkData } = this.props;
 
         const totalSales1 = FirstFile.totalOrderedProductSales;
         const totalSales2 = SecondFile.totalOrderedProductSales;
@@ -40,81 +16,32 @@ class VisualSection extends PureComponent {
         let limitSales1 = (percentageSales / 100) * totalSales1;
         let limitSales2 = (percentageSales / 100) * totalSales2;
 
-        // if (fileType === 'both') {
-        FirstFileItems = this.mapFileItems(FirstFile.sortedFileData, limitSales1, totalSales1);
-        SecondFileItems = this.mapFileItems(SecondFile.sortedFileData, limitSales2, totalSales2);
-        // } else if (fileType === 'first') {
-        //     FirstFileItems = this.mapFileItems(FirstFile.sortedFileData, limitSales1, totalSales1);
-        //     SecondFileItems = SecondFile.sortedFileData.slice(0, 20);
-        // } else if (fileType === 'second') {
-        //     FirstFileItems = FirstFile.sortedFileData.slice(0, 20);
-        //     SecondFileItems = this.mapFileItems(SecondFile.sortedFileData, limitSales2, totalSales2);
-        // }
+        let statusUpdatedFirstFileData = filterBasedOnBenchmark(FirstFile.sortedFileData, SecondFile.sortedFileData, benchmarkData);
+        let statusUpdatedSecondFileData = filterBasedOnBenchmark(SecondFile.sortedFileData, FirstFile.sortedFileData, benchmarkData);
 
-        let combinedTable = [];
+        FirstFileItems = filterBasedOnPercentage(statusUpdatedFirstFileData, limitSales1, withBenchmark);
+        SecondFileItems = filterBasedOnPercentage(statusUpdatedSecondFileData, limitSales2, withBenchmark);
+
+        // barchart and piechart display data
+        let FirstFileSales = [];
+        let SecondFileSales = [];
 
         FirstFileItems.map((item) => {
-            let combineTableObject = {};
+            let dataItem = {
+                name: item.SKU,
+                sales: item.OrderedProductSales
+            };
 
-            const findSecondTableIndex = SecondFileItems.findIndex((el) => el.SKU === item.SKU);
-
-            if (findSecondTableIndex > -1) {
-                combineTableObject = {
-                    "SKU": item.SKU,
-                    "Sales F1": item.OrderedProductSales,
-                    "Sales F2": SecondFileItems[findSecondTableIndex].OrderedProductSales,
-                    "Units F1": item.UnitsOrdered,
-                    "Units F2": SecondFileItems[findSecondTableIndex].UnitsOrdered,
-                    "Sessions F1": item.Sessions,
-                    "Sessions F2": SecondFileItems[findSecondTableIndex].Sessions,
-                    "AOV F1": (item.OrderedProductSales / item.UnitsOrdered).toFixed(2),
-                    "AOV F2": (SecondFileItems[findSecondTableIndex].OrderedProductSales / SecondFileItems[findSecondTableIndex].UnitsOrdered).toFixed(2),
-                    "Conv.Rate F1": ((item.UnitsOrdered / item.Sessions) * 100).toFixed(2),
-                    "Conv.Rate F2": ((SecondFileItems[findSecondTableIndex].UnitsOrdered / SecondFileItems[findSecondTableIndex].Sessions) * 100).toFixed(2),
-                }
-            } else {
-                combineTableObject = {
-                    "SKU": item.SKU,
-                    "Sales F1": item.OrderedProductSales,
-                    "Sales F2": '',
-                    "Units F1": item.UnitsOrdered,
-                    "Units F2": '',
-                    "Sessions F1": item.Sessions,
-                    "Sessions F2": '',
-                    "AOV F1": (item.OrderedProductSales / item.UnitsOrdered).toFixed(2),
-                    "AOV F2": '',
-                    "Conv.Rate F1": ((item.UnitsOrdered / item.Sessions) * 100).toFixed(2),
-                    "Conv.Rate F2": '',
-                }
-            }
-
-            console.log(combineTableObject);
-
-            combinedTable = combinedTable.concat(combineTableObject);
+            FirstFileSales = FirstFileSales.concat(dataItem);
         });
 
-        // add remaining second table data
         SecondFileItems.map((item) => {
-            let combineTableObject = {};
-            const indexInExistingTable = combinedTable.findIndex((el) => el.SKU === item.SKU);
+            let dataItem = {
+                name: item.SKU,
+                sales: item.OrderedProductSales
+            };
 
-            if (indexInExistingTable === -1) {
-                combineTableObject = {
-                    "SKU": item.SKU,
-                    "Sales F2": item.OrderedProductSales,
-                    "Sales F1": '',
-                    "Units F2": item.UnitsOrdered,
-                    "Units F1": '',
-                    "Sessions F2": item.Sessions,
-                    "Sessions F1": '',
-                    "AOV F2": (item.OrderedProductSales / item.UnitsOrdered).toFixed(2),
-                    "AOV F1": '',
-                    "Conv.Rate F2": ((item.UnitsOrdered / item.Sessions) * 100).toFixed(2),
-                    "Conv.Rate F1": '',
-                }
-
-                combinedTable = combinedTable.concat(combineTableObject);
-            }
+            SecondFileSales = SecondFileSales.concat(dataItem);
         });
 
         return (
@@ -123,11 +50,32 @@ class VisualSection extends PureComponent {
 
                 <div className='VisualDataSection'>
                     <div className='BarChartSeries'>
-                        Bar Chart
+                        <p className='VisualDataSection__ChartCaption'>Individual Data: F1 (Sales)</p>
+                        <ResponsiveContainer width='100%' height={220}>
+                            <BarChart data={FirstFileSales}>
+                                <XAxis dataKey="name" />
+                                <YAxis hide />
+                                <Tooltip />
+                                <Bar dataKey="sales" fill="#8884d8" />
+                            </BarChart>
+                        </ResponsiveContainer>
+
+                        <p className='VisualDataSection__ChartCaption'>Individual Data: F2 (Sales)</p>
+                        <ResponsiveContainer width='100%' height={220}>
+                            <BarChart data={SecondFileSales}>
+                                <XAxis dataKey="name" />
+                                <YAxis hide />
+                                <Tooltip />
+                                <Bar dataKey="sales" fill="#b8b5e8" />
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
 
-                    <div className='PieChartSeries'>
-                        Pie Chart
+                    <div className='BenchmarkSection'>
+                        <p>Benchmark SKUs</p>
+                        {this.props.benchmarkData.length === 0 ? <p>Nothing to show</p> : this.props.benchmarkData.map((item) => {
+                            return (<p className='BenchmarkTile'>{item}</p>)
+                        })}
                     </div>
                 </div>
             </div>

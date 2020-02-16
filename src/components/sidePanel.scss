@@ -1,7 +1,98 @@
-@import '../App.scss';
+@import "../App.scss";
 
 .SidePanel {
-    width: 10%;
-    min-height: 100vh;
-    background-color: $secondary-purple;
+  width: 10%;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: $primary-purple;
+  font-family: "Bebas-Regular";
+  color: $primary-white;
+  padding: 0 8px;
+
+  &__Title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .InputSection {
+    border-bottom: 1px solid $primary-white;
+    padding-bottom: 20px;
+
+    &__Label {
+      margin: 10px 0;
+    }
+
+    &__Input {
+      margin: 5px 0;
+      outline: none;
+
+      &::-webkit-file-upload-button {
+        visibility: hidden;
+      }
+
+      &::before {
+        content: "Upload File";
+        background-color: $primary-white;
+        color: $tertiary-purple;
+        font-family: "Bebas-Regular";
+        font-size: 18px;
+        padding: 8px 10px;
+        padding-top: 10px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        outline: none;
+      }
+    }
+
+    &__Button {
+      margin-top: 30px;
+      background-color: $primary-white;
+      color: $secondary-purple;
+      font-family: "Bebas-Regular";
+      font-size: 18px;
+      padding: 5px 10px;
+      border: 1px solid $secondary-purple;
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-white;
+        background-color: $tertiary-purple;
+        border: 1px solid $primary-white;
+      }
+    }
+
+    .UploadedFile {
+      margin-top: 20px;
+
+      &__Status {
+        margin: 0;
+        opacity: 0.8;
+        word-wrap: break-word;
+      }
+    }
+  }
+
+  .FilterSection {
+    &__Title {
+      font-size: 18px;
+    }
+
+    &__Options {
+      display: block;
+      width: 90%;
+      font-family: 'Bebas-Regular';
+      padding: 5px 0;
+    }
+
+    &__Label {
+      margin: 0;
+      margin-top: 10px;
+    }
+  }
+}
+
+// hide 'No File Chosen' text
+input[type="file"] {
+  color: transparent;
 }

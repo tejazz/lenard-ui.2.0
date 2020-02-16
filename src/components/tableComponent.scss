@@ -1,0 +1,35 @@
+@import "../App.scss";
+
+.TableComponent {
+  width: 100%;
+  border: 1px solid $primary-purple;
+
+  .Row {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+
+    &--Head {
+      background-color: $primary-purple;
+      color: white;
+    }
+
+    &--Data {
+      border-bottom: 1px solid $tertiary-purple;
+
+      &:hover {
+        background-color: $secondary-purple;
+        color: white;
+      }
+    }
+  }
+
+  .DataRowContainer {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .Column {
+    text-align: center;
+  }
+}

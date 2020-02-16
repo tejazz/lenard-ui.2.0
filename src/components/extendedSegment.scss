@@ -1,54 +1,66 @@
-@import '../App.scss';
+@import "../App.scss";
 
 .ExtendedSegment {
-    width: 90%;
-    max-height: 100vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    background-color: $primary-white;
-    padding: 10px;
+  width: 90%;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: $primary-white;
+  padding: 10px;
 }
 
 .PrimaryTitle {
-    width: 90%;
-    color: $primary-black;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 6px;
+  width: 90%;
+  color: $primary-black;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 20px;
+  font-family: "Bebas-Regular";
+  font-size: 18px;
+  text-align: center;
 }
 
 .TileContainer {
-    display: flex;
-    width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  font-family: "Bebas-Regular";
+  margin-bottom: 20px;
 
-    .TileWrapper {
-        width: 25%;
+  .TileWrapper {
+    width: 15%;
+  }
+
+  .Tile {
+    background-image: linear-gradient(to right, $secondary-purple, $tertiary-purple);
+    color: $primary-white;
+    width: 70%;
+    margin: 0 auto;
+    padding: 10px;
+    padding-left: 10px;
+
+    &__Label {
+      margin: 0;
+      margin-bottom: 5px;
+      opacity: 0.8;
     }
 
-    .Tile {
-        background-color: $secondary-purple;
-        color: $primary-white;
-        width: 90%;
-        margin: 0 auto;
-
-        &__Label {
-
-        }
-
-        &__Count {
-
-            &--1 {
-
-            }
-
-            &--2 {
-
-            }
-        }
-
-        &__Percent {
-
-        }
+    &__Count {
+      margin: 0;
+      margin-bottom: 5px;
     }
+
+    &__Primary {
+      font-size: 18px;
+      font-weight: 600;
+      margin-left: 5px;
+    }
+
+    &__Percent {
+      margin: 0;
+      font-size: 18px;
+      opacity: 0.8;
+    }
+  }
 }
